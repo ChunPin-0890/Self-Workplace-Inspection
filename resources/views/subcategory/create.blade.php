@@ -75,5 +75,5 @@
     </form>
 
 
-<p class="text-center text-primary"><small>T--</small></p>
+<p class="text-center text-primary"><small></small></p>
 @endsection

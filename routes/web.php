@@ -111,10 +111,11 @@ Route::group(['middleware' => ['auth']], function() {
         Route::delete('/zones/{zone}/destroy', 'destroy')->name('zones.destroy');
         Route::delete('/zones/{zone}/groups/{group}', 'destroyGroup')->name('zones.group.destroyGroup');
     });
-    Route::resource('groupusers', GroupUserController::class);
-    Route::resource('inspectionform', InspectionformController::class);
+    // Route::resource('groupusers', GroupUserController::class);
+    // Route::resource('inspectionform', InspectionformController::class);
 
- 
+});
 
-
+Route::get('/testing', function () {
+    return view('testing');
 });

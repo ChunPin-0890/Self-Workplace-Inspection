@@ -33,10 +33,13 @@ class InspectionController extends Controller
                 'children'
             ]);
     
-        if ($search) {
-            $query->where('name', 'LIKE', "%$search%");
-        }
-    
+            if ($search) {
+                $query->where(function ($query) use ($search) {
+                    $query->where('name', 'LIKE', "%$search%")
+                          ->orWhere('type', 'LIKE', "%$search%");
+                });
+            }
+            
         $inspections = $query->paginate(20);
     
         return view('inspections.index', compact('inspections', 'search'))

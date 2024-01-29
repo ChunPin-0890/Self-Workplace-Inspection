@@ -9,6 +9,7 @@ class Oprunit extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'name'
+        'name',
+        'type'
     ];
 }

@@ -38,7 +38,14 @@
 		            <input type="text" name="name" class="form-control" placeholder="unit">
 		        </div>
 		    
-           
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <label for="type">Type</label>
+                 
+                     <select id="type" name="type">
+                         <option value="Ladang"> Ladang</option>
+                         <option value="Kilang" selected>Kilang</option>
+                     </select>
+                 </div>
 		    </div>
 		    <div class="col-xs-12 col-sm-12 col-md-12 text-center">
 		            <button type="submit" class="btn btn-primary">Create</button>

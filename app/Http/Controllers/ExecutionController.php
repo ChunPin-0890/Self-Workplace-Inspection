@@ -7,7 +7,6 @@ use App\Models\Planning;
 use App\Models\Subplanning;
 use Dompdf\Dompdf;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 class ExecutionController extends Controller
 {
@@ -17,7 +16,7 @@ class ExecutionController extends Controller
         $subplanning = Subplanning::findOrFail($sub_id);
     
         $search = $request->input('search');
-    
+        
         $executions = Execution::where('subplanning_id', $sub_id)
             ->whereHas('inspection', function ($q) use ($search) {
                 $q->where('parent_id', 0)
@@ -44,33 +43,38 @@ class ExecutionController extends Controller
     }
 
     public function store(Request $request, $id, $sub_id)
-    {   
-        
+    {
         $validated = $request->validate([
             'subplanning_id' => 'required',
             'inspection_id' => [
                 'required',
-                Rule::unique('executions')->where(function ($query) use($request) {
+                Rule::unique('executions')->where(function ($query) use ($request) {
                     return $query->where('subplanning_id', $request->subplanning_id)
                         ->where('inspection_id', $request->inspection_id);
                 }),
             ],
             'user_id' => 'nullable|integer'
         ]);
-
+    
         $inspection = Inspection::with('children')
             ->findOrFail($validated['inspection_id']);
-
+    
+        // Create execution for the parent inspection
         $execution = Execution::create($validated);
-
+    
         foreach ($inspection->children as $child) {
-            Execution::createAllChildren($child, $validated['subplanning_id'], $validated['user_id']);
-
+            // Create execution for each child inspection
+            Execution::create([
+                'subplanning_id' => $validated['subplanning_id'],
+                'inspection_id' => $child->id,
+                'user_id' => $validated['user_id']
+            ]);
         }
-        return redirect()->route('plannings.sub.execution.index', ['id' => $id, 'sub_id'=> $sub_id] )
-        ->with('success', 'Execution created successfully.');
-
+    
+        return redirect()->route('plannings.sub.execution.index', ['id' => $id, 'sub_id' => $sub_id])
+            ->with('success', 'Execution created successfully.');
     }
+    
     public function show()
     {   
         
@@ -85,6 +89,15 @@ class ExecutionController extends Controller
 
      public function edit($id, $sub_id, $execution_id)
      {
+    //     $execution = Execution::query()->with([
+    //         'children.children',
+    //         'inspection',
+    //         'subPlanning'
+    //     ])->where('id', $execution_id)->firstOrFail();
+    //     dd($execution->toArray());
+    //     
+
+
          $execution = Execution::findOrFail($execution_id);
          $inspections = Inspection::where('parent_id', 0)->get();
          $sub_planning = Subplanning::with(['parent', 'groups.users'])->findOrFail($sub_id);
@@ -93,9 +106,11 @@ class ExecutionController extends Controller
          $executionChildren = $inspection->children()->with('children')->get();
          $executionChildrenIds = $executionChildren->pluck('id');
          $executionChildrenIds = json_decode(json_encode($executionChildrenIds), true);
+
          foreach ($executionChildren as $key => $child){
             $array = [];
-            foreach ($child->children as $index => $grandChild)
+
+        foreach ($child->children as $index => $grandChild)
          {
             $array[] =  $grandChild->id ;
          }
@@ -105,17 +120,12 @@ class ExecutionController extends Controller
             // foreach ($child->children as $index => $grandChild){
                 if ( !empty($array) ){
                     $executionChildrenIds =  array_merge($executionChildrenIds, array_values($array));
-
                 }
             // }
-            
          }
-
         // print_r($executionChildrenIds);
         //  $executionChildrenIds2 = $executionChildren->children->pluck('id');
-
         //  array_merge($executionChildrenIds, $executionChildrenIds2);
-
             // print_r($executionChildrenIds);
          $executions = \Illuminate\Support\Facades\DB::table('executions')
                    ->whereIn('inspection_id', array_values($executionChildrenIds))
@@ -124,52 +134,50 @@ class ExecutionController extends Controller
                 //    print_r($newTableRecords);
         //  $executions = Execution::findOrFail($execution->inspection_id)->get();
         $executions = json_decode(json_encode($executions), true);
-// Extract the 'id' column values
-$idValues = array_column($executions, 'inspection_id');
+        // Extract the 'id' column values
+        $idValues = array_column($executions, 'inspection_id');
 
-// Create a new array with keys matching the 'id' values
-$executions = array_combine($idValues, $executions);
+        // Create a new array with keys matching the 'id' values
+        $executions = array_combine($idValues, $executions);
 
-// Verify the updated array
+            // Verify the updated array
          return view('executions.edit', compact('execution', 'inspections', 'sub_planning', 'executionChildren', 'executions'))
          ->with('id', $sub_planning->parent->id)
          ->with('sub_id', $sub_planning->id);
-     
-
      }
 
      public function update(Request $request, $id, $sub_id, $execution_id)
      {
-         $validator = Validator::make($request->all(), [
-             'user_id' => 'nullable|integer',
-             'status' => 'array',
-             'status.*' => 'required|in:100,50,0',
-             'comment' => 'array',
-             'comment.*' => 'nullable|string|max:255',
-         ]);
+
+        $validated = $request->validate([
+            'user_id' => 'nullable|integer',
+            'status' => 'nullable|integer',
+            'comment' => 'nullable|string',
+
+            'children.id.*' => 'required|integer',
+            'children.status.*' => 'required|in:100,50,0',
+            'children.comment.*' => 'nullable|string|max:255',
+            'children.user_id.*' => 'nullable|integer',
+            
+            'children.id.*.children.*.id' => 'required|integer',
+            'children.status.*.children.*.status' => 'required|in:100,50,0',
+            'children.comment.*.children.*.comment' => 'nullable|string|max:255',
+            'children.user_id.*.children.*.user_id' => 'nullable|integer',
+        ]);
      
-         if ($validator->fails()) {
-             return redirect()->back()
-                 ->withErrors($validator)
-                 ->withInput();
-         }
+        $execution = Execution::findOrFail($execution_id);
      
-         $execution = Execution::findOrFail($execution_id);
-     
-         // Update the user ID
-         $execution->user_id = $request->input('user_id');
-         $execution->save();    
+        // Update the user ID
+        $execution->update($validated);
+
+        dd($validated);
+
+        foreach($validated['children'] as $key => $value){
+            $temp_execution = Execution::find($value['id']);
+            $temp_execution->update($value);
+        }
 
 
-        //  dd($request->input('status'));
-         foreach(  $request->input('status') as $k => $v){
-            $childExecution = Execution::where('inspection_id',$k)->firstOrFail();
-            $childExecution->status = $v;
-            $childExecution->comment = $request->input('comment')[$k];
-            $childExecution->save();
-         }
-
-     
         //  // Update the execution status and comment for the main execution
         //  $execution->status = $request->input('status.' . $execution_id);
         //  $execution->comment = $request->input('comment.' . $execution_id);
@@ -190,8 +198,11 @@ $executions = array_combine($idValues, $executions);
         //      }
         //  }
      
-         return redirect()->route('plannings.sub.execution.index', ['id' => $id, 'sub_id' => $sub_id])
-             ->with('success', 'Execution updated successfully.');
+        return redirect()
+            ->back()
+            ->with('success', 'Execution updated successfully.');
+        // return redirect()->route('plannings.sub.execution.index', ['id' => $id, 'sub_id' => $sub_id])
+        //     ->with('success', 'Execution updated successfully.');
      }
      
     /**

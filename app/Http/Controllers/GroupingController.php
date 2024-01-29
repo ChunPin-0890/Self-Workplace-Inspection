@@ -110,8 +110,8 @@ class GroupingController extends Controller
     {
         $group->delete();
     
-        return redirect()->route('groupings.index')
-                        ->with('success','Group deleted successfully');
+            return redirect()->route('groupings.index')
+                            ->with('success','Group deleted successfully');
     }
 
     public function destroyUserGroup(Request $request, Group $group, User $user)

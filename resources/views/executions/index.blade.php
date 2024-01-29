@@ -9,10 +9,19 @@
         </div>
         <div class="d-flex justify-content-between align-items-center">
             <div class="pull-right">
-                @can('inspection-create')
+                <a href="{{ route('plannings.sub.printpdf', ['id' => $parent_planning->id, 'sub_id' => $subplanning->id]) }}" class="btn btn-primary ">Generate PDF</a>
+                {{-- @can('inspection-create')
                     <a class="btn btn-success" href="{{ route('plannings.sub.execution.create', ['id' => $subplanning->parent->id, 'sub_id' => $subplanning->id]) }}">Create New Schedule</a>
-                @endcan
+                @endcan --}}
+                
+@if ($message = Session::get('success'))
+<div class="alert alert-success">
+  <p>{{ $message }}</p>
+</div>
+@endif
             </div>
+            
+
             <div>
                 <form action="{{ route('plannings.sub.execution.index', ['id' => $parent_planning->id, 'sub_id' => $subplanning->id]) }}" method="GET" class="form-inline">
                    <div class="d-flex justify-content-end">
@@ -26,11 +35,14 @@
         </div>
     </div>
 </div>
+
 <!-- Add this button/link inside the index.blade.php view -->
-<a href="{{ route('plannings.sub.printpdf', ['id' => $parent_planning->id, 'sub_id' => $subplanning->id]) }}" class="btn btn-primary ">Generate PDF</a>
 
 
                 </form>
+
+
+
             </div>
         </div>
     </div>
@@ -39,18 +51,18 @@
 @if ($executions->isNotEmpty())
     <table class="table table-bordered table-hover mt-4">
         <tr>
-            <th>No</th>
-            <th width="350px">Name</th>
-            <th width="80px">Status</th>
-            <th width="460px">Comment</th>
-            <th width="150px">Action</th>
+            <th width="100px" style="text-align: center;">No</th>
+            <th width="300px">Name</th>
+            <th width="120px">Status</th>
+            {{-- <th width="460px">Comment</th> --}}
+            <th width="100px">Action</th>
         </tr>
         @foreach ($executions as $key => $execution)
             <tr>
                 <td style="text-align: center;">{{ $key + 1 }}</td>
                 <td>{{ $execution->inspection->name }}</td>
                 <td>{{ $execution->status }}</td>
-                <td>{{ $execution->comment }}</td>
+                {{-- <td>{{ $execution->comment }}</td> --}}
                 <td>
                     <form action="{{ route('plannings.sub.execution.destroy', ['id' => $parent_planning->id, 'sub_id' => $subplanning->id, 'execution_id' => $execution->id]) }}" method="POST">
                         @can('inspection-edit')

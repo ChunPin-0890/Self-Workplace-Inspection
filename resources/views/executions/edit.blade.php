@@ -25,6 +25,8 @@
     <form action="{{ route('plannings.sub.execution.update', ['id' => $id, 'sub_id' => $sub_id, 'execution_id' => $execution->id]) }}" method="POST">
         @csrf
         @method('PUT')
+        <input type="hidden" name="status" value="{{ $sub_planning->status }}">
+        <input type="hidden" name="comment" value="{{ $sub_planning->comment }}">
 
         <div class="col-xs-12 col-sm-12 col-md-12">
             <div class="form-group">
@@ -54,19 +56,27 @@
 
                 @foreach ($executionChildren as $key => $child)
                     
-                <tr>
+                    <tr>
                         <td>{{ $key + 1 }}</td>
-                        <td>{{ $child->name }}</td>
+                        <td>
+                            {{ $child->name }}
+                            <input type="hidden" name="executions[{{$key}}][id]" value="{{ $child->id }}">
+                            <input type="hidden" name="executions[{{$key}}][parent_id]" value="{{ $child->parent_id }}">
+                            <input type="hidden" name="executions[{{$key}}][subplanning_id]" value="{{ $child->subplanning_id }}">
+                            <input type="hidden" name="executions[{{$key}}][inspection_id]" value="{{ $child->inspection_id }}">
+                            <input type="hidden" name="executions[{{$key}}][user_id]" value="{{ $child->user_id }}">
+                        </td>
 
                         <td>
-                            <input type="radio" name="status[{{ $child->id }}]" value="100" {{ $executions[$child->id]['status'] == 100 ? 'checked' : '' }}> Good<br>
-                            <input type="radio" name="status[{{ $child->id }}]" value="50" {{ $executions[$child->id]['status']== 50 ? 'checked' : '' }}> Not good<br>
-                            <input type="radio" name="status[{{ $child->id }}]" value="0" {{  $executions[$child->id]['status'] == 0 ? 'checked' : '' }}> Irrelevant
+                            <input type="radio" name="executions[{{$key}}][status]" value="100" {{ $executions[$child->id]['status'] == 100 ? 'checked' : '' }}> Good<br>
+                            <input type="radio" name="executions[{{$key}}][status]" value="50" {{ $executions[$child->id]['status']== 50 ? 'checked' : '' }}> Not good<br>
+                            <input type="radio" name="executions[{{$key}}][status]" value="0" {{  $executions[$child->id]['status'] == 0 ? 'checked' : '' }}> Irrelevant
                         </td>
+
                         <td>
                             <div class="col-xs-12 col-sm-12 col-md-12">
                                 <div class="form-group">
-                                    <textarea class="form-control" style="height:150px" name="comment[{{ $child->id }}]" placeholder="Comment">{{$executions[$child->id]['comment'] }}</textarea>
+                                    <textarea class="form-control" style="height:150px" name="executions[{{$key}}][comment]" placeholder="Comment">{{$executions[$child->id]['comment'] }}</textarea>
                                 </div>
                             </div>
                         </td>
@@ -75,17 +85,24 @@
                     @foreach ($child->children as $index => $grandChild)
                         <tr>
                             <td>{{ chr(65 + $index) }}</td>
-                            <td>{{ $grandChild->name }}</td>
-                          
                             <td>
-                                <input type="radio" name="status[{{ $grandChild->id }}]" value="100" {{ $executions[$grandChild->id]['status']  == 100 ? 'checked' : '' }}> Good<br>
-                                <input type="radio" name="status[{{ $grandChild->id }}]" value="50" {{$executions[$grandChild->id]['status']  == 50 ? 'checked' : '' }}> Not good<br>
-                                <input type="radio" name="status[{{ $grandChild->id }}]" value="0" {{ $executions[$grandChild->id]['status'] == 0 ? 'checked' : '' }}> Irrelevant
+                                {{ $grandChild->name }}
+                                <input type="hidden" name="executions[{{$key}}][children][{{$index}}][id]" value="{{ $grandChild->id }}">
+                                <input type="hidden" name="executions[{{$key}}][children][{{$index}}][parent_id]" value="{{ $grandChild->parent_id }}">
+                                <input type="hidden" name="executions[{{$key}}][children][{{$index}}][subplanning_id]" value="{{ $grandChild->subplanning_id }}">
+                                <input type="hidden" name="executions[{{$key}}][children][{{$index}}][inspection_id]" value="{{ $grandChild->inspection_id }}">
+                                <input type="hidden" name="executions[{{$key}}][children][{{$index}}][user_id]" value="{{ $grandChild->user_id }}">
+                            </td>
+
+                            <td>
+                                <input type="radio" name="executions[{{$key}}][children][{{$index}}][status]" value="100" {{ $executions[$grandChild->id]['status']  == 100 ? 'checked' : '' }}> Good<br>
+                                <input type="radio" name="executions[{{$key}}][children][{{$index}}][status]" value="50" {{$executions[$grandChild->id]['status']  == 50 ? 'checked' : '' }}> Not good<br>
+                                <input type="radio" name="executions[{{$key}}][children][{{$index}}][status]" value="0" {{ $executions[$grandChild->id]['status'] == 0 ? 'checked' : '' }}> Irrelevant
                             </td>
                             <td>
                                 <div class="col-xs-12 col-sm-12 col-md-12">
                                     <div class="form-group">
-                                        <textarea class="form-control" style="height:150px" name="comment[{{ $grandChild->id }}]" placeholder="Comment">{{ $executions[$grandChild->id]['comment']  }}</textarea>
+                                        <textarea class="form-control" style="height:150px" name="executions[{{$key}}][children][{{$index}}][comment]" placeholder="Comment">{{ $executions[$grandChild->id]['comment']  }}</textarea>
                                     </div>
                                 </div>
                             </td>
@@ -99,5 +116,5 @@
         </div>
     </form>
 
-    <p class="text-center text-primary"><small>--</small></p>
+    
 @endsection

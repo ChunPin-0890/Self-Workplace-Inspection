@@ -28,13 +28,14 @@
                
             <th>No</th>
           <th>Name</th>
+          <th>Type</th>
             <th width="280px">Action</th>
             </tr>
 	    @foreach ($oprunits as $oprunit)
 	    <tr>
 	        <td>{{ ++$i }}</td>
 	        <td>{{ $oprunit->name}}</td>
-	       
+            <td>{{ $oprunit->type}}</td>
 	        <td>
                 <form action="{{ route('oprunits.destroy',$oprunit->id) }}" method="POST">
     

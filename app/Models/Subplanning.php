@@ -40,5 +40,31 @@ class Subplanning extends Model
     public function executions()
     {
         return $this->hasMany(Execution::class);
+    
+    
     }
+    public function inspections() {
+
+        // return $this->belongsToMany(Inspection::class, 'execution_inspection');
+        return $this->hasMany(Inspection::class, 'id', 'inspection_id');
+    
+    }
+
+public static function createAllChildren(Inspection $inspection, $subplanning_id, $user_id)
+    {
+
+        static::create([
+            'subplanning_id' => $subplanning_id,
+            'inspection_id' => $inspection->id,
+            'user_id' => $user_id
+        ]);
+
+        for ($i = 0; $i < count($inspection?->children); $i++) {
+
+            static::createAllChildren($inspection?->children[$i], $subplanning_id, $user_id);
+
+        }
+
+    }
+
 }

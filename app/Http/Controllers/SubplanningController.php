@@ -1,11 +1,14 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\Execution;
 use App\Models\Group;
+use App\Models\Inspection;
 use App\Models\Oprunit;
 use App\Models\Planning;
 use App\Models\Subplanning;
 use Illuminate\Http\Request;
+
 class SubplanningController extends Controller
 {
     /**
@@ -29,7 +32,7 @@ class SubplanningController extends Controller
 
      */
     public function create($id)
-    {   
+    {
         
         $oprs = Oprunit::all();
         $groups = Group::all();
@@ -55,23 +58,49 @@ class SubplanningController extends Controller
 
             'group_id' => 'required',
             'ou_id' => 'required',
+            
         ]);
         
         $sub_planning = Subplanning::create($validated);
 
         $sub_planning->groups()?->attach($validated['group_id']);
         $sub_planning->operatingUnits()?->attach($validated['ou_id']);
+        
+        // Checklist
+        // query inspections checklist item based on OU type
+        //loop a foreach for inspection checklist items and create a checklist
+        
+        $ou = OprUnit::find($validated['ou_id']);
+        $ouType = $ou->type;
     
-        return redirect()->route('plannings.sub.index', ['id' => $id]  )
-                        ->with('success','Schedule created successfully.');
-    }
+        // Query inspections based on OU type.
+        $inspections = Inspection::where('type', $ouType)->get();
+        
+        foreach ($inspections as $inspection) {
+            
+            // Create checklist based on $inspection
+            Execution::create([
+                // Fill in the column that need to create execution.
+                'subplanning_id' => $sub_planning->id,
+                'inspection_id' => $inspection->id,
+                'user_id' => 0
+            ]);
 
+            // Get Children based on $inspection.
+            $children = $inspection->children;
+            Execution::createAllChildren($inspection, $sub_planning->id, 0);
+            
+        }
+        
+        return redirect()->route('plannings.sub.index', ['id' => $id])
+        ->with('success', 'Schedule created successfully.');
+    }
     /**
      * Display the specified resource.
 
      */
     public function show(Subplanning $subplanning)
-    {   
+    {
         return view('subplannings.show',compact('subplannings'));
     }
 

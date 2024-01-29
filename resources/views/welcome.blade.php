@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Welcome</title>
+    <title>Welcome to the system</title>
     <style>
         body {
             display: flex;
@@ -62,8 +62,9 @@
     </div>
 
     <div class="container">
-        <h1>Welcome to Self-Workplace Inspection Information System</h1>
-     
+        <img src="{{asset('SWIS.png') }}" alt="System">
+       
+        
     </div>
 </body>
 </html>
