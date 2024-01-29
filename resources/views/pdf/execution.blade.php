@@ -12,6 +12,7 @@
            position: relative;
            display: flex;
            align-items: center;
+           justify-content:center;
         }
 
         .logo {
@@ -31,7 +32,7 @@
             font-size: 20px; 
             font-weight: bold; 
         } 
-        table, th, tr,td {
+        table, th,td {
             border: 1px solid;
             outline: thin solid;
         }   
@@ -48,15 +49,32 @@
             <div class="logo-container">
                 <!-- Assuming the image is in the public/images directory -->
 
-                <div class="table-responsive">
+             
                     <table class="table table-bordered">
                         <tr>
-                            <th style="text-align: center"><img src="{{ asset('sawitkinabalu.png') }}" style="width:150px;height:80px;" alt="Sawit Kinabalu"></th>
-                           <th style="text-align: center"><span class="logo-title">Self-Workplace Inspection Form</span></th>  
-                           
+                            <th rowspan="4" style="text-align: center"><img src="{{ asset('sawitkinabalu.png') }}" style="width:150px;height:80px;" alt="Sawit Kinabalu"></th>
+                            <th style="text-align: center">FORM</th>  
+                            <th>No. Dokumen</th>
+                            <th>SKG/OSH/FRM-10</th>
                         </tr>
+
+                        <tr>
+                            <td rowspan="3" style="text-align: center"><span class="logo-title">Self-Workplace Inspection Form - {{ $subplanning->operatingUnits->map(function($ou) { return $ou->type; })?->implode(', ') }}</span></td> 
+                            <td>LADANG</td>
+                            <td>No Pindaan</td>
+                            
+                        </tr>
+                        <tr>
+                            <td>Tarikh Kuatkuasa</td>
+                            <td>3hb Jun 2020</td>
+                        </tr>
+                        <tr>
+                            <td>Mukasurat</td>
+                            <td>1/1</td>    
+                        </tr>
+
                     </table>
-                </div>
+            
              </div>
         </nav>
 
@@ -95,13 +113,14 @@
 
                            <tr>
                             <th colspan="4">
-                                Operating Unit:
+                                Operating Unit: {{ $subplanning->operatingUnits->map(function($ou) { return $ou->name; })?->implode(', ')}}
                             </th>
                             </tr>
 
                             <tr>
-                              <th colspan="2">Tarikh Pemeriksaan:</th>
-                              <th colspan="2">Masa Pemeriksaan:</th>
+                              <th colspan="2">Tarikh Pemeriksaan:  {{ \Carbon\Carbon::parse($subplanning->start_date)->format('jS F Y') }} </th>
+                              <th colspan="2">Masa Pemeriksaan:   {{ \Carbon\Carbon::parse($subplanning->end_date)->format('jS F Y') }}</th>
+
                             </tr>
                            
                             
@@ -125,7 +144,7 @@
         </tr>
         @foreach ($execution->inspection->children as $child)
             <tr>
-                <td style="text-align: center;"></td>
+                <td style="text-align: center;">{{  chr(ord('a') + $loop->index) }}</td>
                 <td>{{ $child->name }}</td>
                 <td>{{ $child->status }}</td>
                 <td>{{ $child->comment }}</td>
