@@ -53,15 +53,15 @@
         <tr>
             <th width="100px" style="text-align: center;">No</th>
             <th width="300px">Name</th>
-            <th width="120px">Status</th>
+            
             {{-- <th width="460px">Comment</th> --}}
-            <th width="100px">Action</th>
+            <th width="60px">Action</th>
         </tr>
         @foreach ($executions as $key => $execution)
             <tr>
                 <td style="text-align: center;">{{ $key + 1 }}</td>
                 <td>{{ $execution->inspection->name }}</td>
-                <td>{{ $execution->status }}</td>
+                
                 {{-- <td>{{ $execution->comment }}</td> --}}
                 <td>
                     <form action="{{ route('plannings.sub.execution.destroy', ['id' => $parent_planning->id, 'sub_id' => $subplanning->id, 'execution_id' => $execution->id]) }}" method="POST">

@@ -29,9 +29,6 @@
     <form action="{{ route('inspections.update',$inspection->id) }}" method="POST">
     	@csrf
         @method('PUT')
-
-
-        
         <div class="row">
 		    <div class="col-xs-12 col-sm-12 col-md-12">
 		        <div class="form-group">
@@ -39,21 +36,9 @@
 		            <input type="text" name="name" value="{{ $inspection->name }}" class="form-control"  >
 		        </div>
 		    </div>
- 
-           
-             
-		  
-         
-
-          
 		    <div class="col-xs-12 col-sm-12 col-md-12 text-center mt-3">
 		      <button type="submit" class="btn btn-primary">Submit</button>
 		    </div>
 		</div>
-
-
     </form>
-
-
-<p class="text-center text-primary"><small>--</small></p>
 @endsection

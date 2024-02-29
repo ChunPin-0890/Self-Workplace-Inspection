@@ -80,6 +80,7 @@ class GroupingController extends Controller
     public function edit(Group $group)
     {
         $users = User::all();
+
         return view('groupings.edit',compact('group', 'users'));
     }
     
