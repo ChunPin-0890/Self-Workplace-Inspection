@@ -1,13 +1,13 @@
 <?php
-    
+
 namespace App\Http\Controllers;
 
 use App\Models\Group;
 use App\Models\User;
 use Illuminate\Http\Request;
-    
+
 class GroupingController extends Controller
-{ 
+{
     /**
      * Display a listing of the resource.
      *
@@ -15,9 +15,9 @@ class GroupingController extends Controller
      */
     function __construct()
     {
-        $this->middleware('permission:inspection-list|inspection-create|inspection-edit|inspection-delete', ['only' => ['index','show']]);
-        $this->middleware('permission:inspection-create', ['only' => ['create','store']]);
-        $this->middleware('permission:inspection-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:inspection-list|inspection-create|inspection-edit|inspection-delete', ['only' => ['index', 'show']]);
+        $this->middleware('permission:inspection-create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:inspection-edit', ['only' => ['edit', 'update']]);
         $this->middleware('permission:inspection-delete', ['only' => ['destroy']]);
     }
     /**
@@ -25,11 +25,11 @@ class GroupingController extends Controller
      */
     public function index()
     {
-        
+
         $groups = Group::with('users')
             ->get();
-        
-        return view('groupings.index',[
+
+        return view('groupings.index', [
             'groups' => $groups
         ]);
     }
@@ -42,7 +42,7 @@ class GroupingController extends Controller
     {
         return view('groupings.create');
     }
-    
+
     /**
      * Store a newly created resource in storage.
      *
@@ -53,13 +53,13 @@ class GroupingController extends Controller
         $validated = $request->validate([
             'type' => 'required|in:group_1,group_2,group_3,group_4|unique:groups'
         ]);
-    
+
         Group::create($validated);
-    
+
         return redirect()->route('groupings.index')
-                        ->with('success','Group created successfully.');
+            ->with('success', 'Group created successfully.');
     }
-    
+
     /**a
      * Display the specified resource.
      *
@@ -68,10 +68,10 @@ class GroupingController extends Controller
      */
     public function show(Group $group)
     {
-        return view('groupings.show',compact('grouping'));
+        return view('groupings.show', compact('grouping'));
     }
-    
-    
+
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -80,9 +80,9 @@ class GroupingController extends Controller
     public function edit(Group $group)
     {
         $users = User::all();
-        return view('groupings.edit',compact('group', 'users'));
+        return view('groupings.edit', compact('group', 'users'));
     }
-    
+
     /**
      * Update the specified resource in storage.
      *
@@ -95,12 +95,12 @@ class GroupingController extends Controller
         ]);
 
         $group->users()->attach($validated);
-    
+
         return redirect()
             ->back()
-            ->with('success','Group updated successfully');
+            ->with('success', 'Group updated successfully');
     }
-    
+
     /**
      * Remove the specified resource from storage.
      *
@@ -109,9 +109,9 @@ class GroupingController extends Controller
     public function destroy(Group $group)
     {
         $group->delete();
-    
+
         return redirect()->route('groupings.index')
-                        ->with('success','Group deleted successfully');
+            ->with('success', 'Group deleted successfully');
     }
 
     public function destroyUserGroup(Request $request, Group $group, User $user)

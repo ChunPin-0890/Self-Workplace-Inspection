@@ -68,7 +68,7 @@
 
                         <table class="table table-bordered">
                             <tr>
-                            <th>No</th>
+                            <th style="text-align:center;">No</th>
                             <th colspan="2" style="text-align:center">Compliance Status</th>
                             </tr>
 
@@ -95,7 +95,7 @@
 
                            <tr>
                             <th colspan="4">
-                                Operating Unit: 
+                                Operating Unit:
                             </th>
                             </tr>
 
@@ -106,10 +106,10 @@
                            
                             
                             <tr>
-                                <th>No</th>
-                                <th width="350px">Name</th>
-                                <th width="80px">Compliance Status</th>
-                                <th width="460px">Comment</th>
+                                <th width="150px" style="text-align:center;">No</th>
+                                <th width="450px" style="text-align:center;">Name</th>
+                                <th width="80px" style="text-align:center;">Compliance Status</th>
+                                <th width="460px" style="text-align:center;">Comment</th>
                                 
                             </tr>
                            <!-- ... Existing HTML code ... -->

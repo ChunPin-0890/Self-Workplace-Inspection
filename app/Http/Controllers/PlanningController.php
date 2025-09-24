@@ -36,9 +36,9 @@ class PlanningController extends Controller
     {
          return view('plannings.create');
     }
-
-    /**
-     * Store a newly created resource in storage.
+    
+        /**
+    * Store a newly created resource in storage.
      *
      *
      */
