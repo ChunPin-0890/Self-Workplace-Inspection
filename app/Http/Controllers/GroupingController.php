@@ -80,7 +80,8 @@ class GroupingController extends Controller
     public function edit(Group $group)
     {
         $users = User::all();
-        return view('groupings.edit', compact('group', 'users'));
+
+        return view('groupings.edit',compact('group', 'users'));
     }
 
     /**
@@ -109,9 +110,9 @@ class GroupingController extends Controller
     public function destroy(Group $group)
     {
         $group->delete();
-
-        return redirect()->route('groupings.index')
-            ->with('success', 'Group deleted successfully');
+    
+            return redirect()->route('groupings.index')
+                            ->with('success','Group deleted successfully');
     }
 
     public function destroyUserGroup(Request $request, Group $group, User $user)

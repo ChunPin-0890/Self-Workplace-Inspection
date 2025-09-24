@@ -64,7 +64,7 @@ class SubplanningController extends Controller
         $sub_planning = Subplanning::create($validated);
 
         $sub_planning->groups()?->attach($validated['group_id']);
-        $sub_planning->operatingUnits()?->attach($validated['ou_id']);
+        
         
         // Checklist
         // query inspections checklist item based on OU type

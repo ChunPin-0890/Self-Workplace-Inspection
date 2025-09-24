@@ -2,8 +2,6 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome to the system</title>
     <style>
         /* Background Gradient */
@@ -136,21 +134,9 @@
 
     <!-- Centered Content -->
     <div class="container">
-        <h1>Welcome to the System</h1>
-        <p>Your self-workplace inspection journey starts here!</p>
-
-        <!-- Image -->
-        <img src="{{ asset('SWIS.png') }}" alt="System">
-
-        <!-- Call to action buttons for log in and register -->
-        <div>
-            @auth
-                <a href="{{ url('/home') }}" class="btn">Go to Dashboard</a>
-            @else
-                <a href="{{ route('login') }}" class="btn"><i class="fas fa-sign-in-alt"></i> Log in</a>
-                <a href="{{ route('register') }}" class="btn"><i class="fas fa-user-plus"></i> Register</a>
-            @endauth
-        </div>
+        <img src="{{asset('SWIS.png') }}" alt="System">
+       
+        
     </div>
 
     <!-- Add FontAwesome for icons -->

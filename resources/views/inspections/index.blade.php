@@ -26,16 +26,13 @@
         </div>
     </div>
 </div>
+@if ($message = Session::get('success'))
+    <div class="alert alert-success">
+        <p>{{ $message }}</p>
+    </div>
+@endif
 
-
-
-
-    @if ($message = Session::get('success'))
-        <div class="alert alert-success">
-            <p>{{ $message }}</p>
-        </div>
-    @endif
-    @if ($inspections->isNotEmpty())
+@if ($inspections->isNotEmpty())
     <table class="table  table-striped table-bordered table-hover mt-3">
         <tr>
             <th style="text-align: center;" width="100px">No</th>
@@ -43,6 +40,7 @@
             <th>Type</th>
             <th width="260px">Action</th>
         </tr>
+        
         @foreach ($inspections as $key => $inspection)
             <tr>
                 <td style="text-align: center;">{{ $key + 1 }}</td>
@@ -53,21 +51,24 @@
                         @can('inspection-edit')
                             <a class="btn btn-primary" href="{{ route('inspections.edit', $inspection->id) }}">Edit</a>
                         @endcan
+                        
                         @csrf
                         @method('DELETE')
+                        
                         @can('inspection-delete')
                             <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete: {{ $inspection->name }}?')">Delete</button>
                         @endcan
+                        
                         <a href="{{ route('inspections.sub.index', $inspection->id) }}" class="btn btn-primary" style="background-color: orange">Subcategory</a>
                     </form>
                 </td>
             </tr>
         @endforeach
     </table>
-    @else
+@else
     <p class="mt-4">No results found.</p>
 @endif
-    {!! $inspections->appends(['search' => $search])->links() !!}
 
-    <p class="text-center text-primary"><small>--</small></p>
+{!! $inspections->appends(['search' => $search])->links() !!}
+
 @endsection

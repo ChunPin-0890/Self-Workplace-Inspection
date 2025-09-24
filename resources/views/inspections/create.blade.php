@@ -1,5 +1,10 @@
 @extends('layouts.app')
 
+<style>
+        .indented-option {
+            margin-left: 10px; /* Adjust the margin value as per your needs */
+        }
+</style>
 
 @section('content')
     <div class="row">
@@ -28,8 +33,6 @@
 
     <form action="{{ route('inspections.store') }}" method="POST">
     	@csrf
-
-
          <div class="row">
 		    <div class="col-xs-12 col-sm-12 col-md-12">
 		        <div class="form-group">
@@ -38,23 +41,17 @@
 		        </div>
 		    </div>
         
-          
            <div class="col-xs-12 col-sm-12 col-md-12">
-            <label for="type">Type</label>
-         
-             <select id="type" name="type">
-                 <option value="Ladang"> Ladang</option>
-                 <option value="Kilang" selected>Kilang</option>
-             </select>
-         </div>
+                <label for="type">Type</label>
+                <select id="type" name="type">
+                    <option value="Ladang"> Ladang</option>
+                    <option value="Kilang" selected>Kilang</option>
+                </select>
+            </div>
 
 		   
          
-            <style>
-                .indented-option {
-                    margin-left: 10px; /* Adjust the margin value as per your needs */
-                }
-            </style>
+       
          <div class="col-xs-12 col-sm-12 col-md-12">
             <div class="form-group">
                 <strong>Parent Inspection:</strong>
@@ -62,17 +59,9 @@
                     <option value="0">No Parent</option>
                 </select>
             </div>
-        </div>
-        
-        
 		    <div class="col-xs-12 col-sm-12 col-md-12 text-center">
-		            <button type="submit" class="btn btn-primary">Submit</button>
+		         <button type="submit" class="btn btn-primary">Submit</button>
 		    </div>
 		</div>
-
-
     </form>
-
-
-<p class="text-center text-primary"><small>--</small></p>
 @endsection
