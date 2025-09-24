@@ -134,9 +134,22 @@
 
     <!-- Centered Content -->
     <div class="container">
-        <img src="{{asset('SWIS.png') }}" alt="System">
-       
-        
+        <h1>Welcome to the System</h1>
+        <p>Your self-workplace inspection journey starts here!</p>
+
+        <!-- Image -->
+        <img src="{{ asset('SWIS.png') }}" alt="System">
+
+        <!-- Call to action buttons for log in and register -->
+        <div>
+            @auth
+                <a href="{{ url('/home') }}" class="btn">Go to Dashboard</a>
+            @else
+                <a href="{{ route('login') }}" class="btn"><i class="fas fa-sign-in-alt"></i> Log in</a>
+                <a href="{{ route('register') }}" class="btn"><i class="fas fa-user-plus"></i> Register</a>
+            @endauth
+        </div>
+
     </div>
 
     <!-- Add FontAwesome for icons -->
